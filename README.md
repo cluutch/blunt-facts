@@ -13,3 +13,13 @@ python -m pip install --upgrade pip
 python -m pip install --upgrade Pillow
 python laughingbuddha
 ```
+
+
+# Next steps
+
+- Manually upload image to s3
+- Create cloud function gen_blunt_facts_nft
+  - accept imgUrl param (point to s3 image)
+  - accept strain name
+  - output generated NFT
+- Use web3 to list item on holaplex / metaplex

@@ -126,7 +126,7 @@ class BluntFactsNft:
         xpos = self.img.width * self.NUMBER_WIDTH_PCT
         ypos = self.img.height * self.TITLE_HEIGHT_PCT + yoffset
         self.img = add_text(self.img, "#3", xpos, ypos, self.title_font,
-                                color=self.TEXT_COLOR)
+                            color=self.TEXT_COLOR)
 
         xpos = self.img.width * self.TITLE_WIDTH_PCT
         ypos = self.add_title_to_img(xpos, ypos)
