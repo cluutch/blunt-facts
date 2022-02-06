@@ -1,6 +1,6 @@
 import logging
 import requests
-from blunt_facts_nft import BluntFactsNft
+from genbluntfactsnft.blunt_facts_nft import BluntFactsNft
 
 BLUNT_FACTS_ENDPOINTS = "https://api.cluutch.io/v3/blunt-facts"
 logging.root.setLevel(logging.DEBUG)

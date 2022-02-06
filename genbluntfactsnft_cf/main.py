@@ -12,6 +12,12 @@ BLUNT_FACTS_ENDPOINTS = "https://api.cluutch.io/v3/blunt-facts"
 INPUT_CLOUD_BUCKET = 'blunt-facts-input'
 OUTPUT_CLOUD_BUCKET = 'blunt-facts-nfts'
 
+"""
+curl -X POST \
+     -H 'Content-Type: application/json' \
+     -d '{"strain":"fig farm","nft_number":"4","input_img_filename":"figfarm-input.png"}' \
+    https://us-central1-cluutch.cloudfunctions.net/gen-blunt-facts-nft
+"""
 
 @functions_framework.http
 def gen_blunt_facts_nft(request):
@@ -73,8 +79,3 @@ def gen_blunt_facts_nft(request):
     nft_filename = nft.gen_img()
     nft_location = f"gs://{OUTPUT_CLOUD_BUCKET}/{nft_filename}"
     return {'nft_location': nft_location}
-
-# curl -X POST \
-#      -H 'Content-Type: application/json' \
-#      -d '{"strain":"fig farm","nft_number":"4","input_img_filename":"figfarm-input.png"}' \
-#     https://us-central1-cluutch.cloudfunctions.net/gen-blunt-facts-nft

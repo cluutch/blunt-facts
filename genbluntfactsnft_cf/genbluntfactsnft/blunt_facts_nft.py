@@ -2,6 +2,9 @@ import logging
 import io
 from google.cloud import storage
 from PIL import Image, ImageDraw, ImageFont
+import json
+
+from .nft_metadata import NftMetadata
 
 
 def remove_background(img: Image, white_threshold: int) -> Image:
@@ -178,18 +181,32 @@ class BluntFactsNft:
 
     def save_output(self):
         dashed_strain = f"{self.strain_info['strain'].lower().replace(' ', '-')}"
-        filename = f"{dashed_strain}-blunt-facts-{self.nft_number}.png"
+        fileid = f"{dashed_strain}-blunt-facts-{self.nft_number}"
+        img_filename = f"{fileid}.png"
+        metadata_filename = f"{fileid}.json"
+        img_host = "https://storage.googleapis.com"
+        img_uri = f"{img_host}/{self.output_cloud_bucket}/{img_filename}"
+        metadata = NftMetadata(self.strain_info, self.nft_number, img_uri)
 
         if self.use_cloud:
-            logging.info(f"Saving to cloud {self.output_cloud_bucket}/{filename}")
+            logging.info(f"Saving img to cloud {self.output_cloud_bucket}/{img_filename}")
             storage_client = storage.Client()
             upload_bucket = storage_client.get_bucket(self.output_cloud_bucket)
-            upload_blob = upload_bucket.blob(filename)
+            upload_blob = upload_bucket.blob(img_filename)
             img_byte_array = io.BytesIO()
             self.img.save(img_byte_array, self.OUTPUT_IMG_FILETYPE)
             upload_blob.upload_from_string(img_byte_array.getvalue(), content_type="image/png")
-        else:
-            logging.info(f"Saving to file {filename}")
-            self.img.save(filename, self.OUTPUT_IMG_FILETYPE)
 
-        return filename
+            # Upload metadata
+            logging.info(f"Saving metadata to cloud {self.output_cloud_bucket}/{img_filename}")
+            metadata_str = json.dumps(metadata.gen_metadata(), indent=4)
+            metadata_blob = upload_bucket.blob(metadata_filename)
+            metadata_blob.upload_from_string(metadata_str, content_type="application/json")
+        else:
+            logging.info(f"Saving to file {img_filename}")
+            self.img.save(img_filename, self.OUTPUT_IMG_FILETYPE)
+            metadata_file = open(metadata_filename, "w")
+            json.dump(metadata.gen_metadata(), metadata_file, indent=4)
+            metadata_file.close()
+
+        return img_filename, metadata_filename
