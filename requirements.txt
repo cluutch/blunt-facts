@@ -1,2 +1,6 @@
 numpy
 Pillow
+requests==2.27.1
+functions-framework==3.0.0
+flask==2.0.2
+google-cloud-error-reporting==1.4.1
